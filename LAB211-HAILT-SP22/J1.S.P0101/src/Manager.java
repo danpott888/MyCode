@@ -39,10 +39,10 @@ public class Manager extends Validation {
     public void add() {
         System.out.println("========Add========");
         System.out.print("Enter ID: ");
-        String ID = sc.nextLine().trim();
+        String ID = checkID();
         while (searchID(ID) != -1) {
             System.out.print("ID has existed!!! Re-enter: ");
-            ID = sc.nextLine().trim();
+            ID = checkID();
         }
 
         System.out.print("Enter FirstName: ");
@@ -75,15 +75,13 @@ public class Manager extends Validation {
         System.out.println("======Update======");
         showList();
         System.out.print("Enter ID: ");
-        String ID = sc.nextLine().trim();
+        String ID = checkID();
         if (searchID(ID) == -1) {
             System.out.println("Not found!!!");
             return;
         } else {
             System.out.println(list.get(searchID(ID)).toString());
-            if (yesNo("Update ID (Y/N)? ")) {
-                list.get(searchID(ID)).setId(checkID());
-            }
+
             if (yesNo("Update First Name (Y/N)? ")) {
                 list.get(searchID(ID)).setFirstName(checkName());
             }
@@ -117,7 +115,7 @@ public class Manager extends Validation {
         System.out.println("======Remove======");
         showList();
         System.out.print("Enter ID: ");
-        String ID = sc.nextLine().trim();
+        String ID = checkID();
         if (searchID(ID) == -1) {
             System.out.println("Not found!!!");
         } else {
@@ -133,83 +131,28 @@ public class Manager extends Validation {
 
     public void searchName() {
         System.out.println("===Search by name===");
-        int choice = 0;
-        System.out.println("1. Full Name (First Name + Last Name)\n"
-                + "2. First Name\n"
-                + "3. Last Name");
-        while (true) {
-            try {
-                System.out.print("Your choice <1 -> 3>: ");
-                choice = Integer.parseInt(sc.nextLine().trim());
-                if (choice < 0 || choice > 3) {
-                    throw new NumberFormatException();
+        System.out.print("Enter Full Name: ");
+        String fullname = sc.nextLine().toLowerCase().trim();
+        int count = 0;
+        for (Employee employee : list) {
+            if (fullname.contains(employee.getFirstName().toLowerCase()) || fullname.contains(employee.getLastName().toLowerCase())) {
+                count++;
+                if (count == 1) {
+                    System.out.println("All employees found: ");
                 }
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid value!!!");
+                System.out.println(employee.toString());
             }
         }
-        switch (choice) {
-            case 1:
-                System.out.print("Enter Full Name: ");
-                String fullname = sc.nextLine().trim();
-                String[] words = fullname.split("\\s+");
-                int count1 = 0;
-                for (Employee employee : list) {
-                    if (words[0].equalsIgnoreCase(employee.getFirstName())
-                            && words[words.length - 1].equalsIgnoreCase(employee.getLastName())) {
-                        count1++;
-                        if (count1 == 1) {
-                            System.out.println("All employees found: ");
-                        }
-                        System.out.println(employee.toString());
-                    }
-                }
-                if (count1 == 0) {
-                    System.out.println("Not found!!!");
-                }
-                break;
-            case 2:
-                System.out.print("Enter First Name: ");
-                String firstname = sc.nextLine().trim();
-                int count2 = 0;
-                for (Employee employee : list) {
-                    if (firstname.equalsIgnoreCase(employee.getFirstName())) {
-                        count2++;
-                        if (count2 == 1) {
-                            System.out.println("All employees found: ");
-                        }
-                        System.out.println(employee.toString());
-                    }
-                }
-                if (count2 == 0) {
-                    System.out.println("Not found!!!");
-                }
-                break;
-            case 3:
-                System.out.print("Enter Last Name: ");
-                String lastname = sc.nextLine().trim();
-                int count3 = 0;
-                for (Employee employee : list) {
-                    if (lastname.equalsIgnoreCase(employee.getFirstName())) {
-                        count3++;
-                        if (count3 == 1) {
-                            System.out.println("All employees found: ");
-                        }
-                        System.out.println(employee.toString());
-                    }
-                }
-                if (count3 == 0) {
-                    System.out.println("Not found!!!");
-                }
-                break;
+        if (count == 0) {
+            System.out.println("Not found!!!");
         }
+
     }
 
     public void sortBySalary() {
         System.out.println("=======Sort=======");
         Collections.sort(list, (Employee t, Employee t1) -> {
-            if (t.getSalary() > t1.getSalary()) {
+            if (t.getSalary() > t1.getSalary()) { //tang dan
                 return 1;
             } else if (t.getSalary() < t1.getSalary()) {
                 return -1;
